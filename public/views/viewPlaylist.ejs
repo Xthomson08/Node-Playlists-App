@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Playlist</title>
+</head>
+<body>
+    <h1>Playlist: <%= playlist.name %></h1>
+    <ul>
+        <% playlist.songs.forEach(song => { %>
+            <li>
+                <%= song.title %> by <%= song.artist %>
+                <a href="<%= song.url %>" target="_blank">
+                    <button>Listen</button>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+    <br><br>
+    <a href="/playlists">
+        <button>Back to Playlists</button>
+    </a>
+    <br><br>
+    <a href="/auth/logout">
+        <button>Logout</button>
+    </a>
+</body>
+</html>

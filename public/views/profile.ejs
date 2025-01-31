@@ -6,13 +6,13 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>Welcome, <%= user.displayName %>!</h1>
-    <img src="<%= user.photos[0].value %>" alt="Profile Picture">
-    <br></br>
+    <h1>Welcome, <%= user.display_name %>!</h1>
+    <img src="<%= user.profile_picture %>" alt="Profile Picture">
+    <br><br>
     <a href="/playlists">
         <button>View Playlists</button>
     </a>
-    <br></br>
+    <br><br>
     <a href="/auth/logout">
         <button>Logout</button>
     </a>

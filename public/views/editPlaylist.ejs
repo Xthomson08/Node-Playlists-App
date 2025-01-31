@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Playlist</title>
+</head>
+<body>
+    <h1>Edit Playlist: <%= playlist.name %></h1>
+    <form action="/playlists/<%= playlist.id %>/add-song" method="POST">
+        <input type="text" name="title" placeholder="Song Title" required>
+        <input type="text" name="artist" placeholder="Artist" required>
+        <input type="text" name="url" placeholder="Song URL" required>
+        <button type="submit">Add Song</button>
+    </form>
+    <br><br>
+    <a href="/playlists">
+        <button>Back to Playlists</button>
+    </a>
+    <br><br>
+    <a href="/auth/logout">
+        <button>Logout</button>
+    </a>
+</body>
+</html>

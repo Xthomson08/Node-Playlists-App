@@ -6,29 +6,35 @@
     <title>Playlists</title>
 </head>
 <body>
-    <h1>Playlists for <%= user.displayName %></h1>
-    <form action="/playlists/create" method="POST">
-        <input type="hidden" name="user_id" value="<%= user.id %>">
-        <input type="text" name="name" placeholder="Playlist Name" required>
-        <button type="submit">Create Playlist</button>
-    </form>
+    <h1>Playlists</h1>
+    <p>Welcome, <%= user.display_name %>!</p>
     <ul>
         <% playlists.forEach(playlist => { %>
             <li>
-                <h2><%= playlist.name %></h2>
-                <form action="/playlists/<%= playlist.id %>/songs" method="POST">
-                    <input type="text" name="title" placeholder="Song Title" required>
-                    <input type="text" name="artist" placeholder="Artist" required>
-                    <input type="text" name="url" placeholder="Song URL" required>
-                    <button type="submit">Add Song</button>
-                </form>
-                <ul>
-                    <% playlist.songs.forEach(song => { %>
-                        <li><%= song.title %> by <%= song.artist %> - <a href="<%= song.url %>">Listen</a></li>
-                    <% }) %>
-                </ul>
+                <%= playlist.name %>
+                <div style="display: inline-flex; gap: 10px;">
+                    <a href="/playlists/<%= playlist.id %>/view">
+                        <button>View</button>
+                    </a>
+                    <a href="/playlists/<%= playlist.id %>/edit">
+                        <button>Edit</button>
+                    </a>
+                </div>
             </li>
         <% }) %>
     </ul>
+    <br><br>
+    <form action="/playlists" method="POST">
+        <input type="text" name="name" placeholder="New Playlist Name" required>
+        <button type="submit">Create Playlist</button>
+    </form>
+    <br><br>
+    <a href="/profile">
+        <button>Back to Profile</button>
+    </a>
+    <br><br>
+    <a href="/auth/logout">
+        <button>Logout</button>
+    </a>
 </body>
 </html>
