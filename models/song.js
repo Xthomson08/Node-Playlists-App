@@ -3,8 +3,12 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     const Song = sequelize.define('Song', {
         playlist_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false,
+            references: {
+                model: 'Playlists',
+                key: 'id',
+            },
         },
         title: {
             type: DataTypes.STRING,
@@ -17,6 +21,10 @@ module.exports = (sequelize) => {
         url: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        profile_image: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
     });
 

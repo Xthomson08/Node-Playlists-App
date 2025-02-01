@@ -4,37 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playlists</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .content {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .button:hover {
+            background-color: #1976D2;
+        }
+        .header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Playlists</h1>
-    <p>Welcome, <%= user.display_name %>!</p>
-    <ul>
-        <% playlists.forEach(playlist => { %>
-            <li>
-                <%= playlist.name %>
-                <div style="display: inline-flex; gap: 10px;">
-                    <a href="/playlists/<%= playlist.id %>/view">
-                        <button>View</button>
-                    </a>
-                    <a href="/playlists/<%= playlist.id %>/edit">
-                        <button>Edit</button>
-                    </a>
-                </div>
-            </li>
-        <% }) %>
-    </ul>
+    <div class="container">
+        <div class="header">
+            <h1>Your Playlists</h1>
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Playlist Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% playlists.forEach(playlist => { %>
+                        <tr>
+                            <td><%= playlist.name %></td>
+                            <td>
+                                <a href="/playlists/<%= playlist.id %>/view" class="button">View</a>
+                                <a href="/playlists/<%= playlist.id %>/edit" class="button">Edit</a>
+                                <form action="/playlists/<%= playlist.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                    <button type="submit" class="button">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <a href="/playlists/new" class="button">Create New Playlist</a>
+        </div>
+    </div>
     <br><br>
-    <form action="/playlists" method="POST">
-        <input type="text" name="name" placeholder="New Playlist Name" required>
-        <button type="submit">Create Playlist</button>
-    </form>
-    <br><br>
-    <a href="/profile">
-        <button>Back to Profile</button>
-    </a>
-    <br><br>
-    <a href="/auth/logout">
-        <button>Logout</button>
-    </a>
+    <a href="/profile" class="button">Profile</a>
+    <a href="/auth/logout" class="button">Logout</a>
 </body>
 </html>

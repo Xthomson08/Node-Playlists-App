@@ -11,6 +11,18 @@ function isAuthenticated(req, res, next) {
     res.redirect('/');
 }
 
+// Helper functions
+function isYouTubeURL(url) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    return regex.test(url);
+}
+
+function extractYouTubeID(url) {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
 // Get all playlists for the authenticated user
 router.get('/', isAuthenticated, async (req, res) => {
     try {
@@ -38,6 +50,62 @@ router.post('/', isAuthenticated, async (req, res) => {
     }
 });
 
+// Add a song to the playlist
+router.post('/:id/add-song', isAuthenticated, async (req, res) => {
+    try {
+        const { title, artist, url, profileImage } = req.body;
+        const playlist = await Playlist.findOne({
+            where: { id: req.params.id, user_id: req.user.id },
+        });
+        if (!playlist) {
+            return res.status(404).send('Playlist not found');
+        }
+        await Song.create({
+            playlist_id: playlist.id,
+            title,
+            artist,
+            url,
+            profile_image: profileImage || null, // Add this field to your Song model if it doesn't exist
+        });
+        res.status(200).send('Song added successfully');
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Edit a song in the playlist
+router.post('/:id/edit-song/:songId', isAuthenticated, async (req, res) => {
+    try {
+        const { title, artist, url } = req.body;
+        const song = await Song.findOne({
+            where: { id: req.params.songId, playlist_id: req.params.id },
+        });
+        if (!song) {
+            return res.status(404).send('Song not found');
+        }
+        await song.update({ title, artist, url });
+        res.redirect(`/playlists/${req.params.id}/edit`);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Delete a song from the playlist
+router.post('/:id/delete-song/:songId', isAuthenticated, async (req, res) => {
+    try {
+        const song = await Song.findOne({
+            where: { id: req.params.songId, playlist_id: req.params.id },
+        });
+        if (!song) {
+            return res.status(404).send('Song not found');
+        }
+        await song.destroy();
+        res.redirect(`/playlists/${req.params.id}/edit`);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 // Get the edit playlist view
 router.get('/:id/edit', isAuthenticated, async (req, res) => {
     try {
@@ -54,28 +122,6 @@ router.get('/:id/edit', isAuthenticated, async (req, res) => {
     }
 });
 
-// Add a song to the playlist
-router.post('/:id/add-song', isAuthenticated, async (req, res) => {
-    try {
-        const { title, artist, url } = req.body;
-        const playlist = await Playlist.findOne({
-            where: { id: req.params.id, user_id: req.user.id },
-        });
-        if (!playlist) {
-            return res.status(404).send('Playlist not found');
-        }
-        await Song.create({
-            playlist_id: playlist.id,
-            title,
-            artist,
-            url,
-        });
-        res.redirect(`/playlists/${playlist.id}/edit`);
-    } catch (err) {
-        res.status(500).send('Server Error');
-    }
-});
-
 // Get the view playlist view
 router.get('/:id/view', isAuthenticated, async (req, res) => {
     try {
@@ -86,7 +132,7 @@ router.get('/:id/view', isAuthenticated, async (req, res) => {
         if (!playlist) {
             return res.status(404).send('Playlist not found');
         }
-        res.render('viewPlaylist', { user: req.user, playlist });
+        res.render('viewPlaylist', { user: req.user, playlist, isYouTubeURL, extractYouTubeID });
     } catch (err) {
         res.status(500).send('Server Error');
     }

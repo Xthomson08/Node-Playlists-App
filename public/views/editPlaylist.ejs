@@ -4,22 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Playlist</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .content {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .button:hover {
+            background-color: #1976D2;
+        }
+        .header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Edit Playlist: <%= playlist.name %></h1>
-    <form action="/playlists/<%= playlist.id %>/add-song" method="POST">
-        <input type="text" name="title" placeholder="Song Title" required>
-        <input type="text" name="artist" placeholder="Artist" required>
-        <input type="text" name="url" placeholder="Song URL" required>
-        <button type="submit">Add Song</button>
-    </form>
+    <div class="container">
+        <div class="header">
+            <h1>Edit Playlist: <%= playlist.name %></h1>
+        </div>
+        <div class="content">
+            <!-- Form for adding songs using the original method -->
+            <form id="original-form" action="/playlists/<%= playlist.id %>/add-song" method="POST">
+                <input type="text" name="title" placeholder="Song Title" required>
+                <input type="text" name="artist" placeholder="Artist" required>
+                <input type="text" name="url" placeholder="Song URL" required>
+                <button type="submit" class="button">Add Song</button>
+            </form>
+
+            <!-- Form for adding songs using a YouTube URL -->
+            <form id="youtube-form">
+                <input type="text" id="youtube-url" name="url" placeholder="YouTube URL" required>
+                <button type="button" class="button" onclick="addYouTubeSong()">Add YouTube Song</button>
+            </form>
+
+            <ul id="song-list">
+                <% playlist.songs.forEach(song => { %>
+                    <li class="song-item">
+                        <span><%= song.title %> by <%= song.artist %></span>
+                        <div>
+                            <button onclick="showEditForm('<%= song.id %>')" class="button">Edit</button>
+                            <form action="/playlists/<%= playlist.id %>/delete-song/<%= song.id %>" method="POST" style="display:inline;">
+                                <button type="submit" class="button">Delete</button>
+                            </form>
+                        </div>
+                        <form id="edit-form-<%= song.id %>" action="/playlists/<%= playlist.id %>/edit-song/<%= song.id %>" method="POST" style="display:none;">
+                            <input type="text" name="title" value="<%= song.title %>" required>
+                            <input type="text" name="artist" value="<%= song.artist %>" required>
+                            <input type="text" name="url" value="<%= song.url %>" required>
+                            <button type="submit" class="button">Save</button>
+                            <button type="button" class="button" onclick="hideEditForm('<%= song.id %>')">Cancel</button>
+                        </form>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
     <br><br>
-    <a href="/playlists">
-        <button>Back to Playlists</button>
-    </a>
-    <br><br>
-    <a href="/auth/logout">
-        <button>Logout</button>
-    </a>
+    <a href="/playlists" class="button">Back to Playlists</a>
+    <a href="/auth/logout" class="button">Logout</a>
+
+    <script>
+        function showEditForm(songId) {
+            document.getElementById(`edit-form-${songId}`).style.display = 'block';
+        }
+
+        function hideEditForm(songId) {
+            document.getElementById(`edit-form-${songId}`).style.display = 'none';
+        }
+
+        async function addYouTubeSong() {
+            const url = document.getElementById('youtube-url').value;
+            const videoID = extractYouTubeID(url);
+            if (!videoID) {
+                alert('Invalid YouTube URL');
+                return;
+            }
+
+            const apiKey = 'YOUR_YOUTUBE_API_KEY'; // Replace with your YouTube Data API key
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoID}&part=snippet&key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data.items.length === 0) {
+                    alert('Video not found');
+                    return;
+                }
+
+                const video = data.items[0].snippet;
+                const title = video.title;
+                const artist = video.channelTitle;
+                const profileImage = video.thumbnails.default.url;
+
+                // Send the extracted details to the server to save in the database
+                const res = await fetch('/playlists/<%= playlist.id %>/add-song', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, artist, url, profileImage })
+                });
+
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to add song');
+                }
+            } catch (error) {
+                console.error('Error fetching YouTube video details:', error);
+                alert('Failed to fetch YouTube video details');
+            }
+        }
+
+        function extractYouTubeID(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+    </script>
 </body>
 </html>

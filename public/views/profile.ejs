@@ -4,17 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .content {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            padding: 20px;
+        }
+        .button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .button:hover {
+            background-color: #1976D2;
+        }
+        .header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .profile-info {
+            text-align: center;
+        }
+        .profile-info img {
+            border-radius: 50%;
+            margin-bottom: 20px;
+            width: 150px; /* Fixed width */
+            height: 150px; /* Fixed height */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, <%= user.display_name %>!</h1>
-    <img src="<%= user.profile_picture %>" alt="Profile Picture">
-    <br><br>
-    <a href="/playlists">
-        <button>View Playlists</button>
-    </a>
-    <br><br>
-    <a href="/auth/logout">
-        <button>Logout</button>
-    </a>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome, <%= user.display_name %>!</h1>
+        </div>
+        <div class="content">
+            <div class="profile-info">
+                <img id="profile-picture" src="<%= user.profile_picture %>" alt="Profile Picture" onerror="this.onerror=null;this.src='/images/default-profile.png';">
+                <h2><%= user.display_name %></h2>
+                <p>Email: <%= user.email %></p>
+                <a href="/playlists" class="button">View Playlists</a>
+                <a href="/auth/logout" class="button">Logout</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Debugging: Log the initial image URL
+        console.log('Initial image URL:', document.getElementById('profile-picture').src);
+    </script>
 </body>
 </html>
