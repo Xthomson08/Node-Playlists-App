@@ -7,46 +7,44 @@ function hideEditForm(songId) {
 }
 
 async function addYouTubeSong() {
-    const url = document.getElementById('youtube-url').value;
-    const videoID = extractYouTubeID(url);
-    if (!videoID) {
-        alert('Invalid YouTube URL');
+    const youtubeUrl = document.getElementById('youtube-url').value;
+    const videoId = extractYouTubeID(youtubeUrl);
+    const playlistId = document.querySelector('.container').getAttribute('data-playlist-id');
+
+    if (!videoId) {
+        console.error('Invalid YouTube URL');
         return;
     }
 
-    const apiKey = 'YOUR_YOUTUBE_API_KEY'; // Replace with your YouTube Data API key
-    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoID}&part=snippet&key=${apiKey}`;
-
     try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=AIzaSyA13687TDkEgsPLxehZe5yKRwtdTP1lGcw&part=snippet`);
         const data = await response.json();
-        if (data.items.length === 0) {
-            alert('Video not found');
+
+        if (!data.items || data.items.length === 0) {
+            console.error('No video details found');
             return;
         }
 
-        const video = data.items[0].snippet;
-        const title = video.title;
-        const artist = video.channelTitle;
-        const profileImage = video.thumbnails.default.url;
+        const videoDetails = data.items[0].snippet;
+        const title = videoDetails.title;
+        const artist = videoDetails.channelTitle;
 
         // Send the extracted details to the server to save in the database
-        const res = await fetch('/playlists/<%= playlist.id %>/add-song', {
+        const res = await fetch(`/playlists/${playlistId}/add-song`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, artist, url, profileImage })
+            body: JSON.stringify({ title, artist, url: youtubeUrl })
         });
 
         if (res.ok) {
             location.reload();
         } else {
-            alert('Failed to add song');
+            console.error('Error adding song');
         }
     } catch (error) {
         console.error('Error fetching YouTube video details:', error);
-        alert('Failed to fetch YouTube video details');
     }
 }
 

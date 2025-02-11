@@ -4,72 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Playlist</title>
-    <style>
-        body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .content {
-            width: 100%;
-            max-width: 800px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-top: 20px;
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-            cursor: pointer;
-        }
-        .button {
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-        .button:hover {
-            background-color: #1976D2;
-        }
-        .header {
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/styles/editPlaylist.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" data-playlist-id="<%= playlist.id %>">
         <div class="header">
             <h1>Edit Playlist: <%= playlist.name %></h1>
         </div>
@@ -109,11 +47,11 @@
                 <% }) %>
             </ul>
         </div>
+        <div class="return-buttons">
+            <a href="/playlists" class="button">Back to Playlists</a>
+            <a href="/auth/logout" class="button">Logout</a>
+        </div>
     </div>
-    <br><br>
-    <a href="/playlists" class="button">Back to Playlists</a>
-    <a href="/auth/logout" class="button">Logout</a>
-
     <script src="/scripts/editPlaylist.js"></script>
 </body>
 </html>
