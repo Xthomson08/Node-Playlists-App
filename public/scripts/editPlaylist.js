@@ -17,7 +17,7 @@ async function addYouTubeSong() {
     }
 
     try {
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=AIzaSyA13687TDkEgsPLxehZe5yKRwtdTP1lGcw&part=snippet`);
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${YOUTUBE_API_KEY}&part=snippet`);
         const data = await response.json();
 
         if (!data.items || data.items.length === 0) {

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Playlist</title>
     <link rel="stylesheet" href="/styles/editPlaylist.css">
+    <script>
+        const YOUTUBE_API_KEY = '<%= process.env.YOUTUBE_API_KEY %>';
+    </script>
 </head>
 <body>
     <div class="container" data-playlist-id="<%= playlist.id %>">
