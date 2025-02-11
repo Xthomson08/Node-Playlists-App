@@ -4,7 +4,7 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
-const { sequelize, User, Playlist, Song } = require('./db');
+const { sequelize, User } = require('./db');
 const authRoutes = require('./routes/authRoutes');
 const playlistRoutes = require('./routes/playlistRoutes');
 
@@ -14,6 +14,9 @@ const PORT = process.env.PORT || 3000;
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public/views')); // Set views directory to public/views
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
 app.use(express.json());
@@ -42,7 +45,7 @@ passport.use(
                 google_id: profile.id,
                 display_name: profile.displayName,
                 email: profile.emails[0].value,
-                profile_picture: profile.photos[0].value, // Ensure this is the correct path to the profile picture
+                profile_picture: profile.photos[0].value,
             };
 
             // Find or create the user in the database
@@ -79,14 +82,13 @@ app.use('/playlists', playlistRoutes);
 
 // Routes
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.render('index');
 });
 
 app.get('/profile', async (req, res) => {
     if (req.isAuthenticated()) {
         try {
             const user = await User.findOne({ where: { google_id: req.user.google_id } });
-            // console.log('User:', user); // Debugging statement
             res.render('profile', { user });
         } catch (err) {
             res.status(500).send('Server Error');

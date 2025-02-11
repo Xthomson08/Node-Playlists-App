@@ -76,9 +76,35 @@
         }
         .volume-slider {
             width: 100px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            border-radius: 5px;
+            transition: opacity 0.2s;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2196F3;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #2196F3;
+            cursor: pointer;
+            border-radius: 50%;
         }
         .time-display {
             font-size: 14px;
+            display: flex;
+            gap: 10px;
         }
         .song-info {
             text-align: center;
@@ -102,25 +128,50 @@
         .button:hover {
             background-color: #1976D2;
         }
+        .button.active {
+            background-color: white;
+            color: #1976D2;
+            border: 2px solid #2196F3;
+        }
         .header {
             width: 100%;
             max-width: 800px;
             text-align: center;
             margin-top: 20px;
         }
+        .volume-symbol {
+            color: #2196F3;
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .volume-symbol.muted::after {
+            content: '/';
+            color: black;
+            font-size: 30px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -10%);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" data-playlist='<%= JSON.stringify(playlist.songs) %>'>
         <div class="player">
             <div class="custom-player">
-                <button id="play-pause" onclick="togglePlayPause()">&#9658;</button> <!-- Play symbol -->
+                <button id="autoplay-toggle" class="button" onclick="toggleAutoplay()">Autoplay</button>
+                <button id="play-pause" class="button" onclick="togglePlayPause()">&#9658;</button> <!-- Play symbol -->
                 <div class="time-bar" onclick="seek(event)">
                     <div class="progress"></div>
                 </div>
-                <span class="time-display" id="time-display">0:00 / 0:00</span>
-                <span>&#128266;</span> <!-- Volume symbol -->
-                <input type="range" class="volume-slider" min="0" max="100" value="100" onchange="setVolume(this.value)">
+                <div class="time-display" id="time-display">
+                    <span id="current-time">0:00</span>
+                    <span>/</span>
+                    <span id="total-time">0:00</span>
+                </div>
+                <span class="volume-symbol" id="volume-symbol" onclick="toggleMute()">&#128266;</span> <!-- Volume symbol -->
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="100" onchange="setVolume(this.value)">
             </div>
             <div id="player"></div>
             <div class="song-info" id="song-info">Artist - Song Name</div>
@@ -137,8 +188,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% playlist.songs.forEach(song => { %>
-                        <tr onclick="playSong('<%= song.url %>', '<%= song.artist %>', '<%= song.title %>')">
+                    <% playlist.songs.forEach((song, index) => { %>
+                        <tr onclick="playSong('<%= song.url %>', '<%= song.artist %>', '<%= song.title %>', '<%= index %>')">
                             <td><%= song.title %></td>
                             <td><%= song.artist %></td>
                         </tr>
@@ -152,113 +203,6 @@
     <a href="/auth/logout" class="button">Logout</a>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-        let player;
-        let isPlaying = false;
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: '',
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            console.log('Player is ready');
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                isPlaying = true;
-                document.getElementById('play-pause').innerHTML = '&#10074;&#10074;'; // Pause symbol
-                updateProgress();
-            } else {
-                isPlaying = false;
-                document.getElementById('play-pause').innerHTML = '&#9658;'; // Play symbol
-            }
-        }
-
-        function togglePlayPause() {
-            if (isPlaying) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
-        }
-
-        function setVolume(volume) {
-            player.setVolume(volume);
-        }
-
-        function seek(event) {
-            const timeBar = document.querySelector('.time-bar');
-            const progress = document.querySelector('.time-bar .progress');
-            const rect = timeBar.getBoundingClientRect();
-            const offsetX = event.clientX - rect.left;
-            const percentage = offsetX / timeBar.offsetWidth;
-            const newTime = player.getDuration() * percentage;
-            player.seekTo(newTime, true);
-            progress.style.width = `${percentage * 100}%`;
-        }
-
-        function updateProgress() {
-            const progress = document.querySelector('.time-bar .progress');
-            const currentTime = player.getCurrentTime();
-            const duration = player.getDuration();
-            const percentage = (currentTime / duration) * 100;
-            progress.style.width = `${percentage}%`;
-
-            const currentMinutes = Math.floor(currentTime / 60);
-            const currentSeconds = Math.floor(currentTime % 60);
-            const durationMinutes = Math.floor(duration / 60);
-            const durationSeconds = Math.floor(duration % 60);
-
-            document.getElementById('time-display').innerText = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')} / ${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
-
-            if (isPlaying) {
-                requestAnimationFrame(updateProgress);
-            }
-        }
-
-        function playSong(url, artist, title) {
-            const videoID = extractYouTubeID(url);
-            console.log('Playing song:', videoID, artist, title); // Debugging statement
-            if (videoID) {
-                player.loadVideoById(videoID);
-                player.playVideo();
-                const songInfo = document.getElementById('song-info');
-                songInfo.innerText = `${artist} - ${title}`;
-                songInfo.style.display = 'block';
-            } else {
-                console.error('Invalid YouTube URL:', url);
-            }
-        }
-
-        function extractYouTubeID(url) {
-            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            const match = url.match(regex);
-            return match ? match[1] : null;
-        }
-
-        function isYouTubeURL(url) {
-            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            return regex.test(url);
-        }
-
-        // Ensure the YouTube IFrame API is loaded before initializing the player
-        if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-            const tag = document.createElement('script');
-            tag.src = 'https://www.youtube.com/iframe_api';
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        } else {
-            onYouTubeIframeAPIReady();
-        }
-    </script>
+    <script src="/scripts/viewPlaylist.js"></script>
 </body>
 </html>
