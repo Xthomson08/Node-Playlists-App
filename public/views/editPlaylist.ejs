@@ -11,6 +11,10 @@
 </head>
 <body>
     <div class="container" data-playlist-id="<%= playlist.id %>">
+        <div class="user-info">
+            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+            <a href="/auth/logout" class="button">Logout</a>
+        </div>
         <div class="header">
             <h1>Edit Playlist: <%= playlist.name %></h1>
         </div>
@@ -52,7 +56,6 @@
         </div>
         <div class="return-buttons">
             <a href="/playlists" class="button">Back to Playlists</a>
-            <a href="/auth/logout" class="button">Logout</a>
         </div>
     </div>
     <script src="/scripts/editPlaylist.js"></script>

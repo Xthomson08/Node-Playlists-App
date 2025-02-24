@@ -22,7 +22,7 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
     console.log('Player is ready');
-    player.setVolume(100); // Set initial volume to 100
+    player.setVolume(10); // Set initial volume to 100
 }
 
 function onPlayerStateChange(event) {
@@ -62,7 +62,9 @@ function toggleAutoplay() {
 }
 
 function setVolume(volume) {
-    player.setVolume(volume);
+    if (player && typeof player.setVolume === 'function') {
+        player.setVolume(volume);
+    }
     previousVolume = volume;
 }
 

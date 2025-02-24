@@ -10,6 +10,10 @@
     <div class="container" data-playlist='<%= JSON.stringify(playlist.songs) %>'>
         <div class="player">
             <div class="custom-player">
+                <div class="user-info">
+                    <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+                    <a href="/auth/logout" class="button">Logout</a>
+                </div>
                 <button id="autoplay-toggle" class="button" onclick="toggleAutoplay()">Autoplay</button>
                 <button id="play-pause" class="button" onclick="togglePlayPause()">&#9658;</button> <!-- Play symbol -->
                 <div class="time-bar" onclick="seek(event)">
@@ -21,13 +25,13 @@
                     <span id="total-time">0:00</span>
                 </div>
                 <span class="volume-symbol" id="volume-symbol" onclick="toggleMute()">&#128266;</span> <!-- Volume symbol -->
-                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="100" onchange="setVolume(this.value)">
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="10" onchange="setVolume(this.value)">
             </div>
             <div id="player"></div>
             <div class="song-info" id="song-info">Artist - Song Name</div>
         </div>
         <div class="header">
-            <h1>Playlist: <%= playlist.name %></h1>
+            <h1><%= playlist.name %></h1>
         </div>
         <div class="playlist">
             <table>
@@ -49,7 +53,6 @@
         </div>
         <div class="return-buttons">
             <a href="/playlists" class="button">Back to Playlists</a>
-            <a href="/auth/logout" class="button">Logout</a>
         </div>
     </div>
     <script src="https://www.youtube.com/iframe_api"></script>

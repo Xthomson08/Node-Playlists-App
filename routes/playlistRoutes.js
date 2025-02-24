@@ -23,6 +23,8 @@ function extractYouTubeID(url) {
     return match ? match[1] : null;
 }
 
+// playlist.ejs Routes
+
 // Get all playlists for the authenticated user
 router.get('/', isAuthenticated, async (req, res) => {
     try {
@@ -46,9 +48,61 @@ router.post('/', isAuthenticated, async (req, res) => {
         });
         res.redirect('/playlists');
     } catch (err) {
+        console.error('Error creating playlist:', err);
         res.status(500).send('Server Error');
     }
 });
+
+// Delete a playlist
+router.post('/:id/delete', isAuthenticated, async (req, res) => {
+    try {
+        const playlist = await Playlist.findOne({
+            where: { id: req.params.id, user_id: req.user.id },
+        });
+        if (!playlist) {
+            return res.status(404).send('Playlist not found');
+        }
+        await playlist.destroy();
+        res.redirect('/playlists');
+    } catch (err) {
+        console.error('Error deleting playlist:', err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Get the edit playlist view
+router.get('/:id/edit', isAuthenticated, async (req, res) => {
+    try {
+        const playlist = await Playlist.findOne({
+            where: { id: req.params.id, user_id: req.user.id },
+            include: [{ model: Song, as: 'songs' }],
+        });
+        if (!playlist) {
+            return res.status(404).send('Playlist not found');
+        }
+        res.render('editPlaylist', { user: req.user, playlist });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Get the view playlist view
+router.get('/:id/view', isAuthenticated, async (req, res) => {
+    try {
+        const playlist = await Playlist.findOne({
+            where: { id: req.params.id, user_id: req.user.id },
+            include: [{ model: Song, as: 'songs' }],
+        });
+        if (!playlist) {
+            return res.status(404).send('Playlist not found');
+        }
+        res.render('viewPlaylist', { user: req.user, playlist, isYouTubeURL, extractYouTubeID });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// editPlaylist.ejs Routes
 
 // Add a song to the playlist
 router.post('/:id/add-song', isAuthenticated, async (req, res) => {
@@ -101,38 +155,6 @@ router.post('/:id/delete-song/:songId', isAuthenticated, async (req, res) => {
         }
         await song.destroy();
         res.redirect(`/playlists/${req.params.id}/edit`);
-    } catch (err) {
-        res.status(500).send('Server Error');
-    }
-});
-
-// Get the edit playlist view
-router.get('/:id/edit', isAuthenticated, async (req, res) => {
-    try {
-        const playlist = await Playlist.findOne({
-            where: { id: req.params.id, user_id: req.user.id },
-            include: [{ model: Song, as: 'songs' }],
-        });
-        if (!playlist) {
-            return res.status(404).send('Playlist not found');
-        }
-        res.render('editPlaylist', { user: req.user, playlist });
-    } catch (err) {
-        res.status(500).send('Server Error');
-    }
-});
-
-// Get the view playlist view
-router.get('/:id/view', isAuthenticated, async (req, res) => {
-    try {
-        const playlist = await Playlist.findOne({
-            where: { id: req.params.id, user_id: req.user.id },
-            include: [{ model: Song, as: 'songs' }],
-        });
-        if (!playlist) {
-            return res.status(404).send('Playlist not found');
-        }
-        res.render('viewPlaylist', { user: req.user, playlist, isYouTubeURL, extractYouTubeID });
     } catch (err) {
         res.status(500).send('Server Error');
     }

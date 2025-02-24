@@ -8,17 +8,15 @@
 </head>
 <body>
     <div class="container">
+        <div class="user-info">
+            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+            <a href="/auth/logout" class="button">Logout</a>
+        </div>
         <div class="header">
             <h1>Your Playlists</h1>
         </div>
         <div class="content">
             <table>
-                <thead>
-                    <tr>
-                        <th>Playlist Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
                 <tbody>
                     <% playlists.forEach(playlist => { %>
                         <tr>
@@ -26,8 +24,8 @@
                             <td>
                                 <a href="/playlists/<%= playlist.id %>/view" class="button">View</a>
                                 <a href="/playlists/<%= playlist.id %>/edit" class="button">Edit</a>
-                                <form action="/playlists/<%= playlist.id %>?_method=DELETE" method="POST" style="display:inline;">
-                                    <button type="submit" class="button">Delete</button>
+                                <form action="/playlists/<%= playlist.id %>/delete" method="POST" style="display:inline;">
+                                    <button type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>')">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -35,10 +33,33 @@
                 </tbody>
             </table>
         </div>
-        <div class="return-buttons">
-            <a href="/" class="button">Home</a>
-            <a href="/auth/logout" class="button">Logout</a>
+        <div class="create-playlist">
+            <form action="/playlists" method="POST">
+                <button type="submit" class="button" onclick="createPlaylist(event)">Create Playlist</button>
+            </form>
         </div>
     </div>
+    <script>
+        function confirmDelete(event, playlistName) {
+            event.preventDefault();
+            const confirmation = confirm(`Are you sure you want to delete the playlist "${playlistName}"?`);
+            if (confirmation) {
+                event.target.closest('form').submit();
+            }
+        }
+        function createPlaylist(event) {
+            event.preventDefault();
+            const playlistName = prompt('Enter the name of the playlist:');
+            if (playlistName) {
+                const form = event.target.closest('form');
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'name';
+                input.value = playlistName;
+                form.appendChild(input);
+                form.submit();
+            }
+        }
+    </script>
 </body>
 </html>

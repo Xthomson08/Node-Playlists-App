@@ -5,18 +5,42 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    padding-top: 0px;
 }
+
+.user-info {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 20px;
+    margin-top: 20px;
+}
+
+.user-info img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.user-info .button {
+    margin-left: 10px;
+}
+
 .header {
     width: 100%;
     max-width: 800px;
     text-align: center;
     margin-top: 20px;
 }
+
 .content {
     width: 100%;
     max-width: 800px;
@@ -27,6 +51,7 @@ body {
     margin-top: 20px;
     padding: 20px;
 }
+
 .button {
     background-color: #2196F3;
     color: white;
@@ -40,15 +65,19 @@ body {
     cursor: pointer;
     border-radius: 8px;
 }
+
 .button:hover {
     background-color: #1976D2;
 }
+
 .return-buttons {
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    align-items: center;
+    position: absolute;
+    left: 20px;
     margin-top: 20px;
 }
+
 .song-item {
     display: flex;
     justify-content: space-between;
@@ -56,6 +85,7 @@ body {
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
+
 .song-item form {
     display: flex;
     gap: 10px;
