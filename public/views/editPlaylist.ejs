@@ -19,28 +19,24 @@
             <h1>Edit Playlist: <%= playlist.name %></h1>
         </div>
         <div class="content">
-            <!-- Form for adding songs using the original method -->
-            <form id="original-form" action="/playlists/<%= playlist.id %>/add-song" method="POST">
-                <input type="text" name="title" placeholder="Song Title" required>
-                <input type="text" name="artist" placeholder="Artist" required>
-                <input type="text" name="url" placeholder="Song URL" required>
-                <button type="submit" class="button">Add Song</button>
+            <div style="text-align: center;">
+                <button id="add" type="submit" class="button" onclick="showAddForm()">Add Song</button>
+            </div>
+            <form id="add-form" style="display:none; text-align: center;">
+                <input id="title" type="text" name="title" placeholder="Song Title">
+                <input id="artist" type="text" name="artist" placeholder="Artist">
+                <input id="youtube-url" type="text" name="url" placeholder="Youtube URL" required>
+                <button type="button" class="button" onclick="addYouTubeSong()">Add Song</button>
+                <button type="button" class="button" onclick="hideAddForm()">Cancel</button>
             </form>
-
-            <!-- Form for adding songs using a YouTube URL -->
-            <form id="youtube-form">
-                <input type="text" id="youtube-url" name="url" placeholder="YouTube URL" required>
-                <button type="button" class="button" onclick="addYouTubeSong()">Add YouTube Song</button>
-            </form>
-
             <ul id="song-list">
                 <% playlist.songs.forEach(song => { %>
                     <li class="song-item">
                         <span><%= song.title %> by <%= song.artist %></span>
                         <div>
-                            <button onclick="showEditForm('<%= song.id %>')" class="button">Edit</button>
+                            <button id="edit" class="button" onclick="showEditForm('<%= song.id %>')">Edit</button>
                             <form action="/playlists/<%= playlist.id %>/delete-song/<%= song.id %>" method="POST" style="display:inline;">
-                                <button type="submit" class="button">Delete</button>
+                                <button id="delete" type="submit" class="button">Delete</button>
                             </form>
                         </div>
                         <form id="edit-form-<%= song.id %>" action="/playlists/<%= playlist.id %>/edit-song/<%= song.id %>" method="POST" style="display:none;">

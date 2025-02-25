@@ -15,17 +15,23 @@
         <div class="header">
             <h1>Your Playlists</h1>
         </div>
-        <div class="content">
+        <div class="playlists">
             <table>
+                <thead>
+                    <tr>
+                        <th>Playlist Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <% playlists.forEach(playlist => { %>
-                        <tr>
+                        <tr onclick="window.location.href='/playlists/<%= playlist.id %>/view'">
                             <td><%= playlist.name %></td>
                             <td>
-                                <a href="/playlists/<%= playlist.id %>/view" class="button">View</a>
+                                <!-- <a href="/playlists/<%= playlist.id %>/view" class="button">View</a> -->
                                 <a href="/playlists/<%= playlist.id %>/edit" class="button">Edit</a>
-                                <form action="/playlists/<%= playlist.id %>/delete" method="POST" style="display:inline;">
-                                    <button type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>')">Delete</button>
+                                <form action="/playlists/<%= playlist.id %>/delete" method="POST" style="display: inline;">
+                                    <a type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>')">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -51,6 +57,12 @@
             event.preventDefault();
             const playlistName = prompt('Enter the name of the playlist:');
             if (playlistName) {
+                for (const playlist of document.querySelectorAll('td:first-child')) {
+                    if (playlist.textContent === playlistName) {
+                        alert('A playlist with that name already exists.');
+                        return;
+                    }
+                }
                 const form = event.target.closest('form');
                 const input = document.createElement('input');
                 input.type = 'hidden';

@@ -1,9 +1,23 @@
 function showEditForm(songId) {
     document.getElementById(`edit-form-${songId}`).style.display = 'block';
+    document.getElementById('edit').style.display = 'none';
+    document.getElementById('delete').style.display = 'none';
 }
 
 function hideEditForm(songId) {
     document.getElementById(`edit-form-${songId}`).style.display = 'none';
+    document.getElementById('edit').style.display = 'inline-block';
+    document.getElementById('delete').style.display = 'inline-block';
+}
+
+function showAddForm() {
+    document.getElementById('add-form').style.display = 'block';
+    document.getElementById('add').style.display = 'none';
+}
+
+function hideAddForm() {
+    document.getElementById('add-form').style.display = 'none';
+    document.getElementById('add').style.display = 'inline-block';
 }
 
 async function addYouTubeSong() {
@@ -26,8 +40,9 @@ async function addYouTubeSong() {
         }
 
         const videoDetails = data.items[0].snippet;
-        const title = videoDetails.title;
-        const artist = videoDetails.channelTitle;
+        const title = document.getElementById('title').value || videoDetails.title;
+        const artist = document.getElementById('artist').value || videoDetails.channelTitle;
+
 
         // Send the extracted details to the server to save in the database
         const res = await fetch(`/playlists/${playlistId}/add-song`, {
