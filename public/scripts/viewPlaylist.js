@@ -1,10 +1,14 @@
 let player;
 let isPlaying = false;
 let currentSongIndex = 0;
+let currentSongUrl = '';
+let isSongPicked = false;
+let isShuffleEnabled = false;
 let isAutoplayEnabled = false;
 let previousVolume = 100;
 const container = document.querySelector('.container');
 const playlist = JSON.parse(container.getAttribute('data-playlist'));
+const originalPlaylist = [...playlist]; // Copy the original playlist
 
 console.log('Playlist:', playlist); // Debugging statement
 
@@ -44,11 +48,35 @@ function onPlayerStateChange(event) {
 }
 
 function togglePlayPause() {
-    if (isPlaying) {
+    if (!isSongPicked) {
+        playSong(playlist[currentSongIndex].url, playlist[currentSongIndex].artist, playlist[currentSongIndex].title, currentSongIndex);
+        isSongPicked = true;
+    } else if (isPlaying) {
         player.pauseVideo();
     } else {
         player.playVideo();
     }
+}
+
+function toggleShuffle() {
+    isShuffleEnabled = !isShuffleEnabled;
+    const shuffleButton = document.getElementById('shuffle-toggle');
+    if (isSongPicked) {
+        currentSongUrl = playlist[currentSongIndex].url; // Store the URL of the currently playing song
+    }
+
+    if (isShuffleEnabled) {
+        shuffleButton.classList.add('active');
+        playlist.sort(() => Math.random() - 0.5);
+        console.log('Shuffled playlist:', playlist); // Debugging statement
+    } else {
+        shuffleButton.classList.remove('active');
+        playlist.splice(0, playlist.length, ...originalPlaylist); // Reset the playlist
+        console.log('Playlist:', playlist); // Debugging statement
+    }
+
+    // Update the currentSongIndex to the new index of the currently playing song
+    currentSongIndex = playlist.findIndex(song => song.url === currentSongUrl);
 }
 
 function toggleAutoplay() {
@@ -85,6 +113,8 @@ function toggleMute() {
 }
 
 function seek(event) {
+    if (!isSongPicked) return;
+
     const timeBar = document.querySelector('.time-bar');
     const progress = document.querySelector('.time-bar .progress');
     const rect = timeBar.getBoundingClientRect();
@@ -119,7 +149,7 @@ function updateProgress() {
 }
 
 function playSong(url, artist, title, index) {
-    currentSongIndex = index;
+    currentSongIndex = playlist.findIndex(song => song.url === url);
     const videoID = extractYouTubeID(url);
     console.log('Playing song:', videoID, artist, title); // Debugging statement
     if (videoID) {
@@ -132,6 +162,7 @@ function playSong(url, artist, title, index) {
         setTimeout(() => {
             document.getElementById('time-display').style.visibility = 'visible'; // Show timer display after a short delay
         }, 500); // Adjust the delay as needed
+        isSongPicked = true;
     } else {
         console.error('Invalid YouTube URL:', url);
     }
@@ -147,6 +178,19 @@ function playNextSong() {
         playSong(nextSong.url, nextSong.artist, nextSong.title, currentSongIndex);
     } else {
         console.error('No next song found');
+    }
+}
+
+function playPreviousSong() {
+    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+    console.log('Previous song index:', currentSongIndex);
+    const previousSong = playlist[currentSongIndex];
+    console.log('Previous song:', previousSong); // Debugging statement
+    if (previousSong) {
+        console.log('Playing previous song:', previousSong.title);
+        playSong(previousSong.url, previousSong.artist, previousSong.title, currentSongIndex);
+    } else {
+        console.error('No previous song found');
     }
 }
 

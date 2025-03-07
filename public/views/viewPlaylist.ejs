@@ -14,6 +14,9 @@
                     <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
                     <a href="/auth/logout" class="button">Logout</a>
                 </div>
+                <button id="prev" class="button" onclick="playPreviousSong()">&#9194;</button> <!-- Left arrow symbol -->
+                <button id="next" class="button" onclick="playNextSong()">&#9193;</button> <!-- Right arrow symbol -->
+                <button id="shuffle-toggle" class="button" onclick="toggleShuffle()">Shuffle</button>
                 <button id="autoplay-toggle" class="button" onclick="toggleAutoplay()">Autoplay</button>
                 <button id="play-pause" class="button" onclick="togglePlayPause()">&#9658;</button> <!-- Play symbol -->
                 <div class="time-bar" onclick="seek(event)">
