@@ -87,7 +87,7 @@ router.get('/:id/edit', isAuthenticated, async (req, res) => {
 });
 
 // Get the view playlist view
-router.get('/:id/view', isAuthenticated, async (req, res) => {
+router.get('/:id', isAuthenticated, async (req, res) => {
     try {
         const playlist = await Playlist.findOne({
             where: { id: req.params.id, user_id: req.user.id },
@@ -102,12 +102,29 @@ router.get('/:id/view', isAuthenticated, async (req, res) => {
     }
 });
 
+// viewPlaylist.ejs Routes
+
+// Get the song details for the given song ID
+router.get('/:id/songs/:songId', isAuthenticated, async (req, res) => {
+    try {
+        const song = await Song.findOne({
+            where: { id: req.params.songId, playlist_id: req.params.id },
+        });
+        if (!song) {
+            return res.status(404).send('Song not found');
+        }
+        res.render('songDetails', { user: req.user, song });
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
 // editPlaylist.ejs Routes
 
 // Add a song to the playlist
 router.post('/:id/add-song', isAuthenticated, async (req, res) => {
     try {
-        const { title, artist, url, profileImage } = req.body;
+        const { title, artist, url, picture } = req.body;
         const playlist = await Playlist.findOne({
             where: { id: req.params.id, user_id: req.user.id },
         });
@@ -119,7 +136,7 @@ router.post('/:id/add-song', isAuthenticated, async (req, res) => {
             title,
             artist,
             url,
-            profile_image: profileImage || null, // Add this field to your Song model if it doesn't exist
+            picture,
         });
         res.status(200).send('Song added successfully');
     } catch (err) {

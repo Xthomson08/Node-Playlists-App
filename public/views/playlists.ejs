@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="user-info">
-            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'" onerror="retryImageLoad(this, '/images/default-profile.png');">
             <a href="/auth/logout" class="button">Logout</a>
         </div>
         <div class="header">
@@ -25,10 +25,9 @@
                 </thead>
                 <tbody>
                     <% playlists.forEach(playlist => { %>
-                        <tr onclick="window.location.href='/playlists/<%= playlist.id %>/view'">
+                        <tr onclick="window.location.href='/playlists/<%= playlist.id %>'">
                             <td><%= playlist.name %></td>
                             <td>
-                                <!-- <a href="/playlists/<%= playlist.id %>/view" class="button">View</a> -->
                                 <a href="/playlists/<%= playlist.id %>/edit" class="button">Edit</a>
                                 <form action="/playlists/<%= playlist.id %>/delete" method="POST" style="display: inline;">
                                     <a type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>')">Delete</button>

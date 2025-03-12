@@ -12,7 +12,7 @@
 <body>
     <div class="container" data-playlist-id="<%= playlist.id %>">
         <div class="user-info">
-            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+            <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'" onerror="retryImageLoad(this, '/images/default-profile.png');">
             <a href="/auth/logout" class="button">Logout</a>
         </div>
         <div class="header">

@@ -42,15 +42,15 @@ async function addYouTubeSong() {
         const videoDetails = data.items[0].snippet;
         const title = document.getElementById('title').value || videoDetails.title;
         const artist = document.getElementById('artist').value || videoDetails.channelTitle;
-
-
+        const songPicture = videoDetails.thumbnails.high ? videoDetails.thumbnails.high.url : videoDetails.thumbnails.default.url;
+        
         // Send the extracted details to the server to save in the database
         const res = await fetch(`/playlists/${playlistId}/add-song`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, artist, url: youtubeUrl })
+            body: JSON.stringify({ title, artist, url: youtubeUrl, picture: songPicture })
         });
 
         if (res.ok) {

@@ -144,6 +144,12 @@ tr:hover {
     display: none;
 }
 
+.song-picture {
+    height: 64px;
+    width: 85.33px; /* Maintain aspect ratio of youtube thumbnail img */
+    object-fit: contain;
+}
+
 .button {
     background-color: #2196F3;
     color: white;

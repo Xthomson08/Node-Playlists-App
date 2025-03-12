@@ -11,7 +11,7 @@
         <div class="player">
             <div class="custom-player">
                 <div class="user-info">
-                    <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'">
+                    <img src="<%= user.profile_picture %>" alt="Profile Picture" onclick="window.location.href='/profile'" onerror="retryImageLoad(this, '/images/default-profile.png');">
                     <a href="/auth/logout" class="button">Logout</a>
                 </div>
                 <button id="prev" class="button" onclick="playPreviousSong()">&#9194;</button> <!-- Left arrow symbol -->
@@ -40,15 +40,21 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Image</th>
                         <th>Song Name</th>
                         <th>Artist</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% playlist.songs.forEach((song, index) => { %>
                         <tr onclick="playSong('<%= song.url %>', '<%= song.artist %>', '<%= song.title %>', '<%= index %>')">
+                            <td><img src="<%= song.picture %>" alt="Song Picture" class="song-picture" onerror="this.onerror=null;this.src='/images/default-song.png';"></td>
                             <td><%= song.title %></td>
                             <td><%= song.artist %></td>
+                            <td>
+                                <a href="/playlists/<%= playlist.id %>/songs/<%= song.id %>" class="button" onclick="event.stopPropagation()">Details</a>
+                            </td>
                         </tr>
                     <% }) %>
                 </tbody>

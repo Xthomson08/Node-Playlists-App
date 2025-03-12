@@ -11,6 +11,9 @@ const playlist = JSON.parse(container.getAttribute('data-playlist'));
 const originalPlaylist = [...playlist]; // Copy the original playlist
 
 console.log('Playlist:', playlist); // Debugging statement
+for(song in playlist){
+    console.log('Song:', song); // Debugging statement
+}
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {

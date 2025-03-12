@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,23 +7,28 @@
     <link rel="stylesheet" href="/styles/songDetails.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" data-song-url="<%= song.url %>">
         <div class="header">
-            <h1><%= song.title %></h1>
+            <h1>Song Details</h1>
         </div>
         <div class="content">
             <div class="song-info">
-                <img id="song-picture" src="<%= song.picture %>" alt="Song Picture" onerror="this.onerror=null;this.src='/images/default-song.png';">
-                <h2><%= song.title %></h2>
-                <p>Artist: <%= song.artist %></p>
-                <p>Album: <%= song.album %></p>
-                <p>Release Date: <%= song.release_date %></p>
-                <p>Genre: <%= song.genre %></p>
-                <p>Duration: <%= song.duration %></p>
-                <a href="/songs" class="button">Back to Songs</a>
+                <img src="<%= song.picture %>" alt="Song Picture" class="song-picture" onerror="this.onerror=null;this.src='/images/default-song.png';">
+                <div class="song-details">
+                    <h2><%= song.title %></h2>
+                    <p><strong>Artist:</strong> <%= song.artist %></p>
+                    <p><strong>URL:</strong> <a href="<%= song.url %>" target="_blank"><%= song.url %></a></p>
+                </div>
             </div>
+            <div class="video-player">
+                <div id="player"></div>
+            </div>
+            <div class="return-buttons">
+                <a href="/playlists/<%= song.playlist_id %>" class="button">Back to Playlist</a>
+            </div>
+        </div>
     </div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="/scripts/songDetails.js"></script>
 </body>
-</html> -->
-
-<!-- Think of adding a song detail page where I utilize Gemini to give song details such as genre and AI description -->
+</html>

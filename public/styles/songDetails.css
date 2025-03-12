@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.content {
+    padding: 20px;
+}
+
+.song-info {
+    display: flex;
+    align-items: center;
+}
+
+.song-picture {
+    height: 64px;
+    width: 85.33px; /* youtube thumbnail aspect ratio */
+    object-fit: contain;
+    margin-right: 20px;
+}
+
+.song-details {
+    flex: 1;
+}
+
+.video-player {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.return-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
