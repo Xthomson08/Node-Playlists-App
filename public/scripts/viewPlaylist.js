@@ -27,7 +27,7 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-function onPlayerReady(event) {
+function onPlayerReady() {
     console.log('Player is ready');
     player.setVolume(10); // Set initial volume to 100
 }
@@ -79,7 +79,9 @@ function toggleShuffle() {
     }
 
     // Update the currentSongIndex to the new index of the currently playing song
-    currentSongIndex = playlist.findIndex(song => song.url === currentSongUrl);
+    if (isSongPicked) {
+        currentSongIndex = playlist.findIndex(song => song.url === currentSongUrl);
+    }
 }
 
 function toggleAutoplay() {
@@ -151,7 +153,7 @@ function updateProgress() {
     }
 }
 
-function playSong(url, artist, title, index) {
+function playSong(url, artist, title) {
     currentSongIndex = playlist.findIndex(song => song.url === url);
     const videoID = extractYouTubeID(url);
     console.log('Playing song:', videoID, artist, title); // Debugging statement

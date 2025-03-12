@@ -96,7 +96,7 @@ router.get('/:id', isAuthenticated, async (req, res) => {
         if (!playlist) {
             return res.status(404).send('Playlist not found');
         }
-        res.render('viewPlaylist', { user: req.user, playlist, isYouTubeURL, extractYouTubeID });
+        res.render('viewPlaylist', { user: req.user, playlist });
     } catch (err) {
         res.status(500).send('Server Error');
     }

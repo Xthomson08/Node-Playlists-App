@@ -16,7 +16,7 @@
         </div>
         <div class="content">
             <div class="profile-info">
-                <img id="profile-picture" src="<%= user.profile_picture %>" alt="Profile Picture" onerror="retryImageLoad(this, '/images/default-profile.png');">
+                <img id="profile-picture" src="<%= user.profile_picture %>" referrerPolicy="no-referrer" alt="Profile Picture" onerror="src='/images/default-profile.png';">
                 <h2><%= user.display_name %></h2>
                 <p>Email: <%= user.email %></p>
                 <a href="/playlists" class="button">View Playlists</a>

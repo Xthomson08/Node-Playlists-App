@@ -48,7 +48,7 @@
                 </thead>
                 <tbody>
                     <% playlist.songs.forEach((song, index) => { %>
-                        <tr onclick="playSong('<%= song.url %>', '<%= song.artist %>', '<%= song.title %>', '<%= index %>')">
+                        <tr onclick="playSong('<%= song.url %>', '<%= song.artist %>', '<%= song.title %>')">
                             <td><img src="<%= song.picture %>" alt="Song Picture" class="song-picture" onerror="this.onerror=null;this.src='/images/default-song.png';"></td>
                             <td><%= song.title %></td>
                             <td><%= song.artist %></td>
@@ -64,7 +64,6 @@
             <a href="/playlists" class="button">Back to Playlists</a>
         </div>
     </div>
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="/scripts/viewPlaylist.js"></script>
 </body>
 </html>

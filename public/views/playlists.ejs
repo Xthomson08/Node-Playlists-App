@@ -30,7 +30,7 @@
                             <td>
                                 <a href="/playlists/<%= playlist.id %>/edit" class="button">Edit</a>
                                 <form action="/playlists/<%= playlist.id %>/delete" method="POST" style="display: inline;">
-                                    <a type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>')">Delete</button>
+                                    <a type="submit" class="button" onclick="confirmDelete(event, '<%= playlist.name %>'), event.stopPropagation()">Delete</button>
                                 </form>
                             </td>
                         </tr>

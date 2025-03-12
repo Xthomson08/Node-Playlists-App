@@ -2,6 +2,11 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
     const Song = sequelize.define('Song', {
+        id: {
+            type: DataTypes.BIGINT,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         playlist_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
