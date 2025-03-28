@@ -90,3 +90,7 @@ body {
     display: flex;
     gap: 10px;
 }
+
+.song-item form button {
+    align-content: center;
+}

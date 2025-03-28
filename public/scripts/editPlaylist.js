@@ -1,23 +1,33 @@
-function showEditForm(songId) {
-    document.getElementById(`edit-form-${songId}`).style.display = 'block';
-    document.getElementById('edit').style.display = 'none';
-    document.getElementById('delete').style.display = 'none';
+function showEditPlaylistNameForm() {
+    document.getElementById('edit-playlist-name-form').style.display = 'block';
+    document.getElementById('edit-playlist-name').style.display = 'none';
 }
 
-function hideEditForm(songId) {
-    document.getElementById(`edit-form-${songId}`).style.display = 'none';
-    document.getElementById('edit').style.display = 'inline-block';
-    document.getElementById('delete').style.display = 'inline-block';
+function hideEditPlaylistNameForm() {
+    document.getElementById('edit-playlist-name-form').style.display = 'none';
+    document.getElementById('edit-playlist-name').style.display = 'inline-block';
 }
 
-function showAddForm() {
-    document.getElementById('add-form').style.display = 'block';
-    document.getElementById('add').style.display = 'none';
+function showEditSongForm(songId) {
+    document.getElementById(`edit-song-form-${songId}`).style.display = 'block';
+    document.getElementById(`edit-song-${songId}`).style.display = 'none';
+    document.getElementById(`delete-song-${songId}`).style.display = 'none';
 }
 
-function hideAddForm() {
-    document.getElementById('add-form').style.display = 'none';
-    document.getElementById('add').style.display = 'inline-block';
+function hideEditSongForm(songId) {
+    document.getElementById(`edit-song-form-${songId}`).style.display = 'none';
+    document.getElementById(`edit-song-${songId}`).style.display = 'inline-block';
+    document.getElementById(`delete-song-${songId}`).style.display = 'inline-block';
+}
+
+function showAddSongForm() {
+    document.getElementById('add-song-form').style.display = 'block';
+    document.getElementById('add-song').style.display = 'none';
+}
+
+function hideAddSongForm() {
+    document.getElementById('add-song-form').style.display = 'none';
+    document.getElementById('add-song').style.display = 'inline-block';
 }
 
 async function addYouTubeSong() {

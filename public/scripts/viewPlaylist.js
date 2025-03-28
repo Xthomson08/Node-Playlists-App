@@ -1,20 +1,29 @@
-let player;
-let isPlaying = false;
-let currentSongIndex = 0;
-let currentSongUrl = '';
-let isSongPicked = false;
-let isShuffleEnabled = false;
-let isAutoplayEnabled = false;
-let previousVolume = 100;
-const container = document.querySelector('.container');
-const playlist = JSON.parse(container.getAttribute('data-playlist'));
-const originalPlaylist = [...playlist]; // Copy the original playlist
+// Highly commented as this is a learning project.
 
-console.log('Playlist:', playlist); // Debugging statement
+/*
+This is the main client-side JavaScript file for the individual playlist view.
+It handles the YouTube player, playlist management, and user interactions.
+*/
+
+let player; // YouTube player instance
+let isPlaying = false;  // Flag to check if a song is currently playing
+let currentSongIndex = 0; // Index of the currently playing song
+let currentSongUrl = ''; // Store the URL of the currently playing song
+let isSongPicked = false; // Flag to check if a song has been picked
+let isShuffleEnabled = false; // Flag to check if shuffle is enabled
+let isAutoplayEnabled = false; // Flag to check if autoplay is enabled
+let previousVolume = 100; // Previous volume level for unmuting
+const container = document.querySelector('.container'); // Get the container element
+const playlist = JSON.parse(container.getAttribute('data-playlist')); // Get the playlist data from the container's data attribute
+const originalPlaylist = [...playlist]; // Copy the original playlist for unshuffling
+
+// Debugging statements to check the playlist structure
+console.log('Playlist:', playlist);
 for(song in playlist){
-    console.log('Song:', song); // Debugging statement
+    console.log('Song:', song);
 }
 
+// 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '0',
@@ -27,10 +36,18 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+// Function to log if the YouTube player is ready and set the initial volume of the player
 function onPlayerReady() {
     console.log('Player is ready');
-    player.setVolume(10); // Set initial volume to 100
+    player.setVolume(20); // Set initial volume to 20
 }
+
+/*
+Function to handle player state changes
+It handles the case when the video is playing or paused and updates the play/pause button accordingly
+Also handles the case when the video ends and checks if autoplay is enabled
+If autoplay is enabled, it plays the next song in the playlist
+*/
 
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING) {

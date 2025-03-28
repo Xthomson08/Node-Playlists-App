@@ -11,18 +11,6 @@ function isAuthenticated(req, res, next) {
     res.redirect('/');
 }
 
-// Helper functions
-function isYouTubeURL(url) {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    return regex.test(url);
-}
-
-function extractYouTubeID(url) {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-}
-
 // playlist.ejs Routes
 
 // Get all playlists for the authenticated user
@@ -120,6 +108,23 @@ router.get('/:id/songs/:songId', isAuthenticated, async (req, res) => {
 });
 
 // editPlaylist.ejs Routes
+
+// Edit the playlist name
+router.post('/:id/edit-playlist-name', isAuthenticated, async (req, res) => {
+    try {
+        const { name } = req.body;
+        const playlist = await Playlist.findOne({
+            where: { id: req.params.id, user_id: req.user.id },
+        });
+        if (!playlist) {
+            return res.status(404).send('Playlist not found');
+        }
+        await playlist.update({ name });
+        res.redirect(`/playlists/${req.params.id}/edit`);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
 
 // Add a song to the playlist
 router.post('/:id/add-song', isAuthenticated, async (req, res) => {
